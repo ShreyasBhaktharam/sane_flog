@@ -1,0 +1,32 @@
+#+TITLE: Getting Started
+#+AUTHOR: Pranav Kesavarapu
+
+* How to use
+Add the following line to your dependencies in ~pubspec.yml~.
+#+BEGIN_SRC
+dependencies:
+  sane_flog: ^0.0.1
+#+END_SRC
+Now run ~flutter pub get~.
+
+** Example
+#+BEGIN_SRC dart
+  import 'package:sane_flog/sane_flog.dart';
+  ....
+  final logger = JsonLogger();
+  // if running in prod
+  logger.initializeLogging('test.log');
+  // if running in dev
+  logger.initializeLogging('test.log', true);
+  ....
+  // The log level is case insensitive. It's converted to all CAPS.
+
+  // Info
+  await logger.log("Info", "HomeScreen", "HomeScreen rendered.");
+  // Warn
+  await logger.log("Warn", "HomeScreen", "HomeScreen took too long to render. Time taken is $timeTaken");
+  // Error
+  await logger.log("Error", "HomeScreen", "HomeScreen contents are out of bounds.Error is: $error");
+  // Debug
+  await logger.log("Debug", "HomeScreen", "HomeScreen rendered. Screen dimensions 2800x1080");
+#+END_SRC
