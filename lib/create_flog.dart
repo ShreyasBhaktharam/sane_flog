@@ -11,7 +11,7 @@ class CreateLogFile {
     } else {
       path = await getExternalStorageDirectory();
     }
-    String logPath = "${path.toString()}/$filename";
+    String logPath = "${path.path}/$filename";
     print(logPath);
     var file = File(logPath);
     if (await file.exists()) {
