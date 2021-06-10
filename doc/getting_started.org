@@ -1,6 +1,6 @@
 #+TITLE: Getting Started
 #+AUTHOR: Pranav Kesavarapu
-[[https://img.shields.io/badge/pub-v0.0.2-blue]]
+
 * How to use
 Add the following line to your dependencies in ~pubspec.yml~.
 #+BEGIN_SRC
