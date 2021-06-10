@@ -4,10 +4,10 @@ import 'dart:core';
 
 import 'package:sane_flog/sane_flog.dart';
 
-void main() {
+void runLogLevelTests() {
   test('Tests log level info', () async {
     final logger = JsonLogger();
-    logger.initializeLogging('test.out', true);
+    logger.initializeLogging(true);
     final expected = {
       'level': 'INFO',
       'component': 'main',
@@ -20,7 +20,7 @@ void main() {
   });
   test('Tests log level warn', () async {
     final logger = JsonLogger();
-    logger.initializeLogging('test.out', true);
+    logger.initializeLogging(true);
     final expected = {
       'level': 'WARN',
       'component': 'main',
@@ -33,7 +33,7 @@ void main() {
   });
   test('Tests log level debug', () async {
     final logger = JsonLogger();
-    logger.initializeLogging('test.out', true);
+    logger.initializeLogging(true);
     final expected = {
       'level': 'DEBUG',
       'component': 'main',
@@ -43,10 +43,10 @@ void main() {
     expect(res['level'], expected['level']);
     expect(res['component'], expected['component']);
     expect(res['log'], expected['log']);
-});
+  });
   test('Tests log level error', () async {
     final logger = JsonLogger();
-    logger.initializeLogging('test.out', true);
+    logger.initializeLogging(true);
     final expected = {
       'level': 'ERROR',
       'component': 'main',
@@ -57,4 +57,8 @@ void main() {
     expect(res['component'], expected['component']);
     expect(res['log'], expected['log']);
   });
+}
+
+void main() {
+  runLogLevelTests();
 }

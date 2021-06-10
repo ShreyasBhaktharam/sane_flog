@@ -5,21 +5,20 @@ import 'dart:io';
 import 'dart:core';
 import 'package:synchronized/synchronized.dart';
 
+import 'package:sane_flog/create_flog.dart';
+
 class JsonLogger {
   static final _lock = Lock();
   File _logFile = File('');
   static bool logToConsole = false;
 
-  Future initializeLogging(String canonicalLogFileName,
-      [bool console = false]) async {
+  Future initializeLogging([bool console = false]) async {
     logToConsole = console;
-    if (console) {
-      _logFile = File(canonicalLogFileName);
-      final text = '${new DateTime.now()}: Logging Started\n';
-      return _logFile.writeAsString(text, mode: FileMode.write, flush: true);
-    } else {
-      return;
+    if (!logToConsole) {
+      var logFile = CreateLogFile();
+      _logFile = await logFile.getFile();
     }
+    print("Logging started!\n");
   }
 
   Future log(String level, String component, String log) async {
@@ -27,7 +26,8 @@ class JsonLogger {
       'timestamp': '${DateTime.now().toUtc()}',
       'level': '',
       'component': '',
-      'log': ''};
+      'log': ''
+    };
     switch (level.toUpperCase()) {
       case 'INFO':
         logLine['level'] = 'INFO';

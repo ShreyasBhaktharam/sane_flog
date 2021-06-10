@@ -1,11 +1,11 @@
 #+TITLE: Getting Started
 #+AUTHOR: Pranav Kesavarapu
-
+[[https://img.shields.io/badge/pub-v0.0.2-blue]]
 * How to use
 Add the following line to your dependencies in ~pubspec.yml~.
 #+BEGIN_SRC
 dependencies:
-  sane_flog: ^0.0.1
+  sane_flog: ^0.0.2
 #+END_SRC
 Now run ~flutter pub get~.
 
@@ -15,9 +15,9 @@ Now run ~flutter pub get~.
   ....
   final logger = JsonLogger();
   // if running in prod
-  logger.initializeLogging('test.log');
+  logger.initializeLogging();
   // if running in dev
-  logger.initializeLogging('test.log', true);
+  logger.initializeLogging(true);
   ....
   // The log level is case insensitive. It's converted to all CAPS.
 
