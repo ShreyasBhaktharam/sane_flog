@@ -1,3 +1,6 @@
+## 0.0.3
+Making the library api only and independent of flutter
+
 ## 0.0.2
 - Daily logs.
   - Now automatically generates the file with `YYYY-MM-DD.log` as the file.

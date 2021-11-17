@@ -1,73 +1,47 @@
 library sane_flog;
 
-import 'dart:convert';
-import 'dart:io';
 import 'dart:core';
-import 'package:synchronized/synchronized.dart';
-import 'package:dio/dio.dart' hide Lock;
-import 'package:sane_flog/create_flog.dart';
+import 'package:http/http.dart' as http;
 
-class JsonLogger {
-  static final _lock = Lock();
-  File _logFile = File('');
-  static bool logToConsole = false;
+enum Level {
+  INFO,
+  DEBUG,
+  WARN,
+  ERROR
+}
 
-  Future initializeLogging(bool logToFile, [bool console = false]) async {
-    logToConsole = console;
-    if (logToFile) {
-      if (!logToConsole) {
-        var logFile = CreateLogFile();
-        _logFile = await logFile.getFile(true);
-      }
-    }
-    print("Logging started!\n");
+class Logger {
+  static String URI = '';
+  Logger(String uri) {
+    URI = uri;
   }
 
-  Future log(String level, String component, String log, bool logToFile) async {
-    Map<String, String> logLine = {
-      'timestamp': '${DateTime.now().toUtc()}',
-      'level': '',
-      'component': '',
-      'log': ''
-    };
-    switch (level.toUpperCase()) {
-      case 'INFO':
-        logLine['level'] = 'INFO';
+  Future log(Level level, String screen, String component, String klass, String message) async {
+    String loglevel;
+    switch (level) {
+      case Level.INFO:
+        loglevel = 'INFO';
         break;
-      case 'DEBUG':
-        logLine['level'] = 'DEBUG';
+      case Level.DEBUG:
+        loglevel = 'DEBUG';
         break;
-      case 'WARN':
-        logLine['level'] = 'WARN';
+      case Level.WARN:
+        loglevel = 'WARN';
         break;
-      case 'ERROR':
-        logLine['level'] = 'ERROR';
+      case Level.ERROR:
+        loglevel = 'ERROR';
         break;
     }
-    logLine['component'] = component;
-    logLine['log'] = log;
-    if (logToFile) {
-      if (logToConsole) {
-        return logLine;
-      } else {
-        return _lock.synchronized(() async {
-          await _logFile.writeAsString(jsonEncode(logLine),
-              mode: FileMode.append, flush: true);
-        });
-      }
-    } else {
-      try {
-        final resp = await Dio()
-            .post("https://teaminbackend.herokuapp.com/log/frontend", data: logLine);
-        if (resp.statusCode == 200) {
-          print("logged succesfully");
-        } else {
-          print("logging failed")
-        }
-      } on DioError catch (e) {
-        //print(e.response.data);
-        throw Exception('Failed to send request to logging route');
-      }
+    Map<String, String> logLine = {
+      'timestamp': '${DateTime.now().toUtc()}',
+      'level': loglevel,
+      'message': '${screen}:${component}:${klass} => ${message}',
+      'location': 'flutter'
+    };
+    var url = Uri.parse(URI);
+    var response = await http.post(url, body: logLine);
+    if (response.statusCode != 201) {
+      throw "Error logging: ${response.body}";
     }
   }
 }
