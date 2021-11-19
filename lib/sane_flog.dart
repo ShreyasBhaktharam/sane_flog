@@ -1,22 +1,34 @@
 library sane_flog;
 
 import 'dart:core';
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
+import 'package:mongo_dart/mongo_dart.dart';
 
-enum Level {
-  INFO,
-  DEBUG,
-  WARN,
-  ERROR
-}
+enum Level { INFO, DEBUG, WARN, ERROR }
 
 class Logger {
-  static String URI = '';
-  Logger(String uri) {
-    URI = uri;
+  // static String URI = '';
+  var db;
+  _init() async {
+    db = await Db.create(
+        'mongodb+srv://teamin:loggingchad@logging.ock5l.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+    await db.open();
   }
 
-  Future log(Level level, String screen, String component, String klass, String message) async {
+  _close() async {
+    await db.close();
+  }
+
+  // Logger(String uri) {
+  //   URI = uri;
+  // }
+
+  Logger() {
+    _init();
+  }
+
+  Future log(Level level, String screen, String component, String klass,
+      String message) async {
     String loglevel;
     switch (level) {
       case Level.INFO:
@@ -38,10 +50,20 @@ class Logger {
       'message': '${screen}:${component}:${klass} => ${message}',
       'location': 'flutter'
     };
-    var url = Uri.parse(URI);
-    var response = await http.post(url, body: logLine);
-    if (response.statusCode != 201) {
-      throw "Error logging: ${response.body}";
-    }
+
+    var collectionName = 'logs';
+    var collection = db.collection(collectionName);
+
+    await collection.insertOne(logLine).then((result) async {
+      //Success!
+    }).catchError((error) async {
+      throw error;
+    });
+
+    // var url = Uri.parse(URI);
+    // var response = await http.post(url, body: logLine);
+    // if (response.statusCode != 201) {
+    //   throw "Error logging: ${response.body}";
+    // }
   }
 }
