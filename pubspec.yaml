@@ -1,6 +1,6 @@
 name: sane_flog
 description: Flutter package that allows for ndjson logging for apps.
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/psiayn/sane_flog
 
 environment:
