@@ -44,7 +44,7 @@ class Logger {
         loglevel = 'ERROR';
         break;
     }
-    Map<String, String> logLine = {
+    Map<String, dynamic> logLine = {
       'timestamp': '${DateTime.now().toUtc()}',
       'level': loglevel,
       'message': '${screen}:${component}:${klass} => ${message}',
